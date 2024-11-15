@@ -257,13 +257,20 @@ private let defaultContext: DependencyContext = {
   }
 }()
 
+extension DependencyValues {
+  public static func sharedLock() -> NSRecursiveLock {
+    CachedValues.sharedLock
+  }
+}
+
 private final class CachedValues: @unchecked Sendable {
   struct CacheKey: Hashable, Sendable {
     let id: ObjectIdentifier
     let context: DependencyContext
   }
 
-  private let lock = NSRecursiveLock()
+  static var sharedLock = NSRecursiveLock()
+  private var lock: NSRecursiveLock { CachedValues.sharedLock }
   fileprivate var cached = [CacheKey: AnySendable]()
 
   func value<Key: TestDependencyKey>(
