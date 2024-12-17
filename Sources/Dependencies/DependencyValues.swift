@@ -35,6 +35,12 @@ import IssueReporting
   }
 #endif
 
+extension DependencyValues {
+  public static func sharedLock() -> NSRecursiveLock {
+    CachedValues.sharedLock
+  }
+}
+
 /// A collection of dependencies that is globally available.
 ///
 /// To access a particular dependency from the collection you use the ``Dependency`` property
@@ -380,7 +386,8 @@ public final class CachedValues: @unchecked Sendable {
     }
   }
 
-  private let lock = NSRecursiveLock()
+  static let sharedLock = NSRecursiveLock()
+  private var lock: NSRecursiveLock { CachedValues.sharedLock }
   public var cached = [CacheKey: any Sendable]()
 
   func value<Key: TestDependencyKey>(
