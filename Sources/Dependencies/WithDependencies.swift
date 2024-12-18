@@ -58,9 +58,10 @@ public func withDependencies<R>(
 ///     duration of the operation.
 ///   - operation: An operation to perform wherein dependencies have been overridden.
 /// - Returns: The result returned from `operation`.
-@_unsafeInheritExecutor
+
 @discardableResult
 public func withDependencies<R>(
+  isolation: isolated (any Actor)? = #isolation,
   _ updateValuesForOperation: (inout DependencyValues) async throws -> Void,
   operation: () async throws -> R
 ) async rethrows -> R {
@@ -165,7 +166,7 @@ public func withDependencies<Model: AnyObject, R>(
 ///     duration of the operation.
 ///   - operation: The operation to run with the updated dependencies.
 /// - Returns: The result returned from `operation`.
-@_unsafeInheritExecutor
+
 @discardableResult
 public func withDependencies<Model: AnyObject, R>(
   from model: Model,
@@ -174,7 +175,8 @@ public func withDependencies<Model: AnyObject, R>(
   fileID: StaticString = #fileID,
   filePath: StaticString = #filePath,
   line: UInt = #line,
-  column: UInt = #column
+  column: UInt = #column,
+  isolation: isolated (any Actor)? = #isolation
 ) async rethrows -> R {
   guard let values = dependencyObjects.values(from: model)
   else {
@@ -212,7 +214,7 @@ public func withDependencies<Model: AnyObject, R>(
 ///     operation.
 ///   - operation: The operation to run with the updated dependencies.
 /// - Returns: The result returned from `operation`.
-@_unsafeInheritExecutor
+
 @discardableResult
 public func withDependencies<Model: AnyObject, R>(
   from model: Model,
@@ -220,7 +222,8 @@ public func withDependencies<Model: AnyObject, R>(
   fileID: StaticString = #fileID,
   filePath: StaticString = #filePath,
   line: UInt = #line,
-  column: UInt = #column
+  column: UInt = #column,
+  isolation: isolated (any Actor)? = #isolation
 ) async rethrows -> R {
   try await withDependencies(
     from: model,
